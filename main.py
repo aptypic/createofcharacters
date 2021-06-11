@@ -3,6 +3,8 @@ import file_operations
 import random
 
 runic_skills = []
+min_range = 3
+max_range = 18
 runic_abilities = ["Стремительный прыжок", "Электрический выстрел",
                    "Ледяной удар", "Стремительный удар", "Кислотный взгляд",
                    "Тайный побег", "Ледяной выстрел", "Огненный заряд"]
@@ -32,12 +34,9 @@ letters_mapping = {
     ' ': ' '
 }
 for ability in runic_abilities:
-    runic_ability = ability
     for letter in ability:
-        for key, value in letters_mapping.items():
-            if letter == key:
-                runic_ability = runic_ability.replace(letter, value)
-    runic_skills.append(runic_ability)
+        ability = ability.replace(letter, letters_mapping[letter])
+    runic_skills.append(ability)
 fake = Faker("ru_RU")
 for charsheet in range(1, 11):
     runic_ability_1, runic_ability_2, runic_ability_3 = (
@@ -48,15 +47,16 @@ for charsheet in range(1, 11):
         "last_name": fake.last_name(),
         "job": fake.job(),
         "town": fake.city(),
-        "strength": random.randrange(8, 14, 1),
-        "agility": random.randrange(8, 14, 1),
-        "endurance": random.randrange(8, 14, 1),
-        "intelligence": random.randrange(8, 14, 1),
-        "luck": random.randrange(8, 14, 1),
+        "strength": random.randrange(min_range, max_range),
+        "agility": random.randrange(min_range, max_range),
+        "endurance": random.randrange(min_range, max_range),
+        "intelligence": random.randrange(min_range, max_range),
+        "luck": random.randrange(min_range, max_range),
         "skill_1": runic_ability_1,
         "skill_2": runic_ability_2,
         "skill_3": runic_ability_3,
     }
-    file_operations.render_template('src/charsheet.svg',
-                                    f'Ready_templates/template-{charsheet}.svg',
-                                    context)
+    if __name__ == "__main__":
+        file_operations.render_template('src/charsheet.svg',
+                                        f'Ready_templates/template-{charsheet}.svg',
+                                        context)
