@@ -5,6 +5,7 @@ import random
 runic_skills = []
 min_range = 3
 max_range = 18
+fake = Faker("ru_RU")
 runic_abilities = ["Стремительный прыжок", "Электрический выстрел",
                    "Ледяной удар", "Стремительный удар", "Кислотный взгляд",
                    "Тайный побег", "Ледяной выстрел", "Огненный заряд"]
@@ -33,30 +34,44 @@ letters_mapping = {
     'Э': 'Э͒͠͠', 'Ю': 'Ю̋͠', 'Я': 'Я̋',
     ' ': ' '
 }
-for ability in runic_abilities:
-    for letter in ability:
-        ability = ability.replace(letter, letters_mapping[letter])
-    runic_skills.append(ability)
-fake = Faker("ru_RU")
-for charsheet in range(1, 11):
-    runic_ability_1, runic_ability_2, runic_ability_3 = (
-        random.sample(runic_skills, 3)
-    )
-    context = {
-        "first_name": fake.first_name(),
-        "last_name": fake.last_name(),
-        "job": fake.job(),
-        "town": fake.city(),
-        "strength": random.randrange(min_range, max_range),
-        "agility": random.randrange(min_range, max_range),
-        "endurance": random.randrange(min_range, max_range),
-        "intelligence": random.randrange(min_range, max_range),
-        "luck": random.randrange(min_range, max_range),
-        "skill_1": runic_ability_1,
-        "skill_2": runic_ability_2,
-        "skill_3": runic_ability_3,
-    }
-    if __name__ == "__main__":
+
+
+def abilities():
+    for ability in runic_abilities:
+        for letter in ability:
+            ability = ability.replace(letter, letters_mapping[letter])
+        runic_skills.append(ability)
+    return runic_skills
+
+
+def charsheets():
+    for charsheet in range(1, 11):
+        runic_ability_1, runic_ability_2, runic_ability_3 = (
+            random.sample(abilities(), 3)
+        )
+        context = {
+            "first_name": fake.first_name(),
+            "last_name": fake.last_name(),
+            "job": fake.job(),
+            "town": fake.city(),
+            "strength": random.randrange(min_range, max_range),
+            "agility": random.randrange(min_range, max_range),
+            "endurance": random.randrange(min_range, max_range),
+            "intelligence": random.randrange(min_range, max_range),
+            "luck": random.randrange(min_range, max_range),
+            "skill_1": runic_ability_1,
+            "skill_2": runic_ability_2,
+            "skill_3": runic_ability_3,
+        }
         file_operations.render_template('src/charsheet.svg',
                                         f'Ready_templates/template-{charsheet}.svg',
                                         context)
+
+
+def main():
+    abilities()
+    charsheets()
+
+
+if __name__ == "__main__":
+    main()
