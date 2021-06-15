@@ -2,13 +2,15 @@ from faker import Faker
 import file_operations
 import random
 
+forms_count = 10
 runic_skills = []
 min_range = 3
 max_range = 18
 fake = Faker("ru_RU")
-runic_abilities = ["Стремительный прыжок", "Электрический выстрел",
-                   "Ледяной удар", "Стремительный удар", "Кислотный взгляд",
-                   "Тайный побег", "Ледяной выстрел", "Огненный заряд"]
+runic_abilities = [
+    "Стремительный прыжок", "Электрический выстрел",
+    "Ледяной удар", "Стремительный удар", "Кислотный взгляд",
+    "Тайный побег", "Ледяной выстрел", "Огненный заряд"]
 letters_mapping = {
     'а': 'а͠', 'б': 'б̋', 'в': 'в͒͠',
     'г': 'г͒͠', 'д': 'д̋', 'е': 'е͠',
@@ -36,7 +38,7 @@ letters_mapping = {
 }
 
 
-def abilities():
+def create_runic_skills():
     for ability in runic_abilities:
         for letter in ability:
             ability = ability.replace(letter, letters_mapping[letter])
@@ -44,10 +46,10 @@ def abilities():
     return runic_skills
 
 
-def charsheets():
-    for charsheet in range(1, 11):
+def create_graphic_forms():
+    for graphic_forms in range(forms_count):
         runic_ability_1, runic_ability_2, runic_ability_3 = (
-            random.sample(abilities(), 3)
+            random.sample(create_runic_skills(), 3)
         )
         context = {
             "first_name": fake.first_name(),
@@ -63,14 +65,15 @@ def charsheets():
             "skill_2": runic_ability_2,
             "skill_3": runic_ability_3,
         }
-        file_operations.render_template('src/charsheet.svg',
-                                        f'Ready_templates/template-{charsheet}.svg',
-                                        context)
+        file_operations.render_template(
+            'src/graphic_form.svg',
+            f'Ready_templates/template-{graphic_forms}.svg',
+            context)
 
 
 def main():
-    abilities()
-    charsheets()
+    create_runic_skills()
+    create_graphic_forms()
 
 
 if __name__ == "__main__":
