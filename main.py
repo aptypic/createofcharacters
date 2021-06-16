@@ -1,13 +1,11 @@
 from faker import Faker
 import file_operations
 import random
-
-forms_count = 10
-runic_skills = []
+fake = Faker("ru_RU")
 min_range = 3
 max_range = 18
-fake = Faker("ru_RU")
-runic_abilities = [
+forms_count = 10
+basic_abilities = [
     "Стремительный прыжок", "Электрический выстрел",
     "Ледяной удар", "Стремительный удар", "Кислотный взгляд",
     "Тайный побег", "Ледяной выстрел", "Огненный заряд"]
@@ -38,42 +36,46 @@ letters_mapping = {
 }
 
 
-def create_runic_skills():
-    for ability in runic_abilities:
+def create_runic_skills(basic_abilities):
+    runic_skills = []
+    for ability in basic_abilities:
         for letter in ability:
             ability = ability.replace(letter, letters_mapping[letter])
         runic_skills.append(ability)
     return runic_skills
 
 
-def create_graphic_forms():
+def create_graphic_forms(min_range, max_range):
+    runic_ability_1, runic_ability_2, runic_ability_3 = (
+        random.sample(create_runic_skills(basic_abilities), 3)
+    )
+    context = {
+        "first_name": fake.first_name(),
+        "last_name": fake.last_name(),
+        "job": fake.job(),
+        "town": fake.city(),
+        "strength": random.randrange(min_range, max_range),
+        "agility": random.randrange(min_range, max_range),
+        "endurance": random.randrange(min_range, max_range),
+        "intelligence": random.randrange(min_range, max_range),
+        "luck": random.randrange(min_range, max_range),
+        "skill_1": runic_ability_1,
+        "skill_2": runic_ability_2,
+        "skill_3": runic_ability_3,
+    }
+    return context
+
+
+def generate_templates(forms_count):
     for graphic_forms in range(forms_count):
-        runic_ability_1, runic_ability_2, runic_ability_3 = (
-            random.sample(create_runic_skills(), 3)
-        )
-        context = {
-            "first_name": fake.first_name(),
-            "last_name": fake.last_name(),
-            "job": fake.job(),
-            "town": fake.city(),
-            "strength": random.randrange(min_range, max_range),
-            "agility": random.randrange(min_range, max_range),
-            "endurance": random.randrange(min_range, max_range),
-            "intelligence": random.randrange(min_range, max_range),
-            "luck": random.randrange(min_range, max_range),
-            "skill_1": runic_ability_1,
-            "skill_2": runic_ability_2,
-            "skill_3": runic_ability_3,
-        }
         file_operations.render_template(
             'src/graphic_form.svg',
             f'Ready_templates/template-{graphic_forms}.svg',
-            context)
+            create_graphic_forms(min_range, max_range))
 
 
 def main():
-    create_runic_skills()
-    create_graphic_forms()
+    generate_templates(forms_count)
 
 
 if __name__ == "__main__":
